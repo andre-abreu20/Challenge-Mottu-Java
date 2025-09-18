@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"></head>
+<body>
+<div th:replace="fragments/menu :: menu"></div>
+
+<div class="container">
+  <h1 class="mb-3">Motos</h1>
+
+  <div class="mb-2">
+    <a class="btn btn-primary" th:href="@{/motos/novo}">Nova Moto</a>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+    <tr><th>ID</th><th>Placa</th><th>Modelo</th><th>Status</th><th>Ações</th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="m : ${motos}">
+      <td th:text="${m.id}">1</td>
+      <td th:text="${m.placa}">ABC-1234</td>
+      <td th:text="${m.modelo}">CG 160</td>
+      <td th:text="${m.status}">ATIVA</td>
+      <td>
+        <a class="btn btn-sm btn-secondary"
+           th:href="@{|/motos/${m.id}/editar|}">Editar</a>
+
+        <form th:action="@{|/motos/${m.id}|}" method="post" class="d-inline">
+          <input type="hidden" name="_method" value="delete"/>
+          <button class="btn btn-sm btn-danger" type="submit">Excluir</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

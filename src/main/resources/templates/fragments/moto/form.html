@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"></head>
+<body>
+<div th:replace="fragments/menu :: menu"></div>
+
+<div class="container">
+    <h1 class="mb-3" th:text="${pageTitle} ?: 'Moto'">Moto</h1>
+
+    <form th:action="${moto.id} != null ? @{|/motos/${moto.id}|} : @{/motos}"
+          th:object="${moto}"
+          method="post">
+
+        <!-- Para UPDATE via POST + override -->
+        <input type="hidden" name="_method"
+               th:value="${moto.id} != null ? 'put' : 'post'"/>
+
+        <div class="mb-3">
+            <label class="form-label">Placa</label>
+            <input class="form-control" th:field="*{placa}" />
+            <div class="text-danger" th:if="${#fields.hasErrors('placa')}"
+                 th:errors="*{placa}">Erro</div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Modelo</label>
+            <input class="form-control" th:field="*{modelo}" />
+            <div class="text-danger" th:if="${#fields.hasErrors('modelo')}"
+                 th:errors="*{modelo}">Erro</div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select class="form-select" th:field="*{status}">
+                <option th:value="ATIVA">ATIVA</option>
+                <option th:value="MANUTENCAO">MANUTENÇÃO</option>
+                <option th:value="INATIVA">INATIVA</option>
+            </select>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary" type="submit">Salvar</button>
+            <a class="btn btn-secondary" th:href="@{/motos}">Voltar</a>
+        </div>
+    </form>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
