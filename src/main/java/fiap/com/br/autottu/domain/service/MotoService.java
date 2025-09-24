@@ -23,18 +23,31 @@ public class MotoService {
     private final MotoRepository repository;
     private final MotoMapper mapper;
 
+    // Valores da Páginação default:
+    public static final int DEFAULT_PAGE = 0;
+    public static final int DEFAULT_SIZE = 50;
+    public static final int MAX_PAGE_SIZE = 100;
+
+    /** Normaliza página/tamanho aplicando defaults e teto máximo */
+    private PageRequest resolvePageRequest(Integer pagina, Integer itens) {
+        int p = (pagina == null || pagina < 0) ? DEFAULT_PAGE : pagina;
+        int s = (itens == null || itens <= 0) ? DEFAULT_SIZE : Math.min(itens, MAX_PAGE_SIZE);
+        return PageRequest.of(p, s);
+    }
+
     @Cacheable(value = "moto", key= "#id")
     public MotoDTO buscarPorId(Integer id) {
         Moto entity = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Moto não encontrada (id = " + id + ")"));
         return mapper.toDTO(entity);
     }
-    @Cacheable(value = "motos", key = "'page:' + #pagina + ':size:' + #itens")
-    public Page<MotoDTO> listarTodas(int pagina, int itens) {
-        return repository.findAll(PageRequest.of(pagina, itens))
-                .map(mapper::toDTO);
-    }
 
+    @Cacheable(value = "motos",
+            key = "'page:' + T(java.util.Objects).toString(#pagina) + ':size:' + T(java.util.Objects).toString(#itens)")
+    public Page<MotoDTO> listarTodas(Integer pagina, Integer itens) {
+        var pr = resolvePageRequest(pagina, itens);
+        return repository.findAll(pr).map(mapper::toDTO);
+    }
     @CacheEvict(value = "motos", allEntries = true)
     @Transactional
     public MotoDTO criar(MotoDTO dto) {

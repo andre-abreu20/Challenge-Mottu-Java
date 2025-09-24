@@ -60,6 +60,13 @@
 			<version>2.6.0</version>
 		</dependency>
 
+		<!-- Spring Boot Security -->
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
 		<!-- Lombok + binding MapStruct -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
